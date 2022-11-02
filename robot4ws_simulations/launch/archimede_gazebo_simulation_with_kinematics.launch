@@ -1,0 +1,13 @@
+<launch>
+    <arg name="include_plugins" default="true"/>
+    <arg name="include_kinematics" default="true"/>
+
+
+    <include file="$(find robot4ws_simulations)/launch/archimede_gazebo_basic.launch">
+        <arg name="include_plugins" value="$(arg include_plugins)"/>
+        <arg name="include_kinematics_plugin" value="$(arg include_kinematics)"/>
+    </include>
+
+    <include file="$(find robot4ws_kinematics)/launch/kinematics.launch"/>
+
+</launch>

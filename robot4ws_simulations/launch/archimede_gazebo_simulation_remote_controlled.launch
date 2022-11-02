@@ -1,0 +1,18 @@
+<launch>
+    <arg "use_joystick" default="false"/>
+    <arg "use_keyboard" default="true"/>
+
+    <include file="$(find robot4ws_simulations)/launch/archimede_gazebo_simulation_with_kinematics.launch"/>
+
+
+    <group if="$(arg use_joystick)">
+        <include file="$(find robot4ws_teleop_joystick)/launch/controller.launch"/>
+    </group>
+
+
+    <group if="$(arg use_keyboard)">
+        <include file="$(find robot4ws_teleop_keyboard)/launch/teleop.launch"/>
+    </group>
+
+
+</launch>

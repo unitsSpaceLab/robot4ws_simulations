@@ -1,0 +1,59 @@
+<launch>
+    <arg name="model" default="$(find robot4ws_description)/urdf/rover.urdf.xacro"/>
+    <arg name="use_rviz" default="false"/>
+    <arg name="include_plugins" default="false"/>
+    <arg name="include_kinematics_plugin" default="false"/>
+    <arg name="include_ros_control" default="false"/>
+
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model) include_plugins:=$(arg include_plugins)
+     include_kinematics_plugin:=$(arg include_kinematics_plugin) include_ros_control:=$(arg include_ros_control)"/>
+
+
+    <arg name="default_world" default="true"/>
+    <arg name="world_path_custom" default=""/> <!--$(find robot4ws_description)/urdf/worlds/step.world-->
+
+
+    <group unless="$(arg default_world)">
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+            <!-- <arg name="physics" value="ode"/> -->
+            <arg name="world_name" value="$(arg world_path_custom)"/>
+            <arg name="paused" value="true"/>
+            <arg name="use_sim_time" value="true"/>
+            <arg name="gui" value="true"/>
+            <arg name="debug" value="false"/>
+            <!--arg name="world_name" value="$(arg world_path)"/-->
+    </include>
+    </group>
+    <group if="$(arg default_world)">
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+            <arg name="paused" value="true"/>
+            <arg name="use_sim_time" value="true"/>
+            <arg name="gui" value="true"/>
+            <!--arg name="world_name" value="$(arg world_path)"/-->
+    </include>
+    </group>
+
+    <group if="$(arg include_kinematics_plugin)">
+        <rosparam command="load" file="$(find robot4ws_simulations)/config/kinematics_config.yaml"/>
+    </group>
+
+    <node name="archimede_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model Archimede"/>
+
+
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+    </node>
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+
+    <group if="$(arg use_rviz)">
+        <node name="archimede_rviz_node" pkg="rviz" type="rviz" args="-d $(find robot4ws_description)/rviz/default.rviz"/>
+    </group>
+
+
+
+
+
+
+
+</launch>

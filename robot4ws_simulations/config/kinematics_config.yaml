@@ -1,0 +1,13 @@
+dinamixel_topic_name: "cmd_vel_motors"
+odom_topic_name: "odom"
+odom_frame_name: "odom"
+odom_rate: 10 #Hz
+
+pid_values_velocity_p: 20
+pid_values_velocity_d: 0
+pid_values_velocity_i: 0
+
+
+pid_values_position_p: 20
+pid_values_position_d: 0
+pid_values_position_i: 0
