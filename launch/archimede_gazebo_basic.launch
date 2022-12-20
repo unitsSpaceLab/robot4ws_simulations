@@ -5,13 +5,18 @@
     <arg name="include_kinematics_plugin" default="false"/>
     <arg name="include_ros_control" default="false"/>
 
-    <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model) include_plugins:=$(arg include_plugins)
+    <param name="robot_description" command="$(find xacro)/xacro $(arg model) include_plugins:=$(arg include_plugins)
      include_kinematics_plugin:=$(arg include_kinematics_plugin) include_ros_control:=$(arg include_ros_control)"/>
+
 
 
     <arg name="default_world" default="true"/>
     <arg name="world_path_custom" default=""/> <!--$(find robot4ws_description)/urdf/worlds/step.world-->
 
+    <group if="$(arg include_kinematics_plugin)">
+        <rosparam command="load" file="$(find robot4ws_simulations)/config/kinematics_config.yaml"/>
+    </group>
+    
 
     <group unless="$(arg default_world)">
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -33,15 +38,12 @@
     </include>
     </group>
 
-    <group if="$(arg include_kinematics_plugin)">
-        <rosparam command="load" file="$(find robot4ws_simulations)/config/kinematics_config.yaml"/>
-    </group>
 
     <node name="archimede_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model Archimede"/>
 
 
 
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
     </node>
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>

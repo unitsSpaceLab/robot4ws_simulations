@@ -80,6 +80,7 @@ void ArchimedeKinematicsPlugin::loadParameters(void)
 
 void ArchimedeKinematicsPlugin::printParams(void)
 {
+    std::cerr << "************************************************************************************" << "\n";
     std::cerr << "Param with name [" << "dinamixel_topic_name]:\t" << this -> _dinamixel_topic_name << "\n";
     std::cerr << "Param with name [" << "odom_topic_name]:\t" << this -> _odo_topic_name << "\n";
     std::cerr << "Param with name [" << "odom_frame_name]:\t" << this -> _odometry_frame_name << "\n";
@@ -88,8 +89,9 @@ void ArchimedeKinematicsPlugin::printParams(void)
     std::cerr << "Param with name [" << "pid_values_velocity_d]:\t" << this -> _pid_vel.GetDGain() << "\n";
     std::cerr << "Param with name [" << "pid_values_velocity_i]:\t" << this -> _pid_vel.GetIGain() << "\n";
     std::cerr << "Param with name [" << "pid_values_position_p]:\t" << this -> _pid_pos.GetPGain() << "\n";
-    std::cerr << "Param with name [" << "pid_values_position_p]:\t" << this -> _pid_pos.GetDGain() << "\n";
-    std::cerr << "Param with name [" << "pid_values_position_p]:\t" << this -> _pid_pos.GetIGain() << "\n";
+    std::cerr << "Param with name [" << "pid_values_position_d]:\t" << this -> _pid_pos.GetDGain() << "\n";
+    std::cerr << "Param with name [" << "pid_values_position_i]:\t" << this -> _pid_pos.GetIGain() << "\n";
+    std::cerr << "************************************************************************************" << "\n";
 }
 
 
