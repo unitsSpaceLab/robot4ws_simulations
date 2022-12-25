@@ -81,7 +81,7 @@ namespace gazebo
 
 
 
-            bool print_debug = true;
+            bool print_debug = false;
             bool use_odometry = false; //This set to false. Odometry is still a TO-DO!
             bool is_plugin_running;
 
@@ -122,6 +122,7 @@ namespace gazebo
             std::string _dinamixel_topic_name;
             std::string _odo_topic_name;
             std::string _odometry_frame_name;
+            double _ctrl_rate;
             double _odom_update_rate;
 
             std::map<int, std::string> _motor_mapping;

@@ -9,7 +9,7 @@ Download .deb from !(https://code.visualstudio.com/)[here]
 ```sudo apt install git```
 
 ## ROS
-Follow !(http://wiki.ros.org/melodic/Installation/Ubuntu)
+Follow [install guide](http://wiki.ros.org/melodic/Installation/Ubuntu)
 
 After installation go to ROS tutorial, as per the last step of the guide.
 
@@ -28,8 +28,17 @@ Then run catkin_make in ```catkin_ws/```
 ### Test
 Everytime we open a Terminal we should do the following:
 * Run ```source devel/setup.bash``` in ```catkin_ws/``` to activate the workspace
-* Run ```roslaunch robot4ws_simulations archimede_gazebo_basic.launch```
+* Run ```roslaunch robot4ws_simulations archimede_gazebo_basic.launch include_plugins:=true```
 
 **Note**: if an API error arises, run the following
 ```nano ~/.ignition/fuel/config.yaml```
 Change the url from ```api.ignitionfuel.org``` to ```api.ignitionrobotics.org```
+
+
+## Dependecies
+
+* gazebo_realsense_plugin: [repository](https://github.com/pal-robotics/realsense_gazebo_plugin)
+* robot4ws_description: [repository](aaa)
+* robot4ws_kinematics: [repository](aaaa)
+* robot4ws_teleop_keyboard: [repository](aaaa)
+* robot4ws_teleop_cotroller: [repository](aaaa)

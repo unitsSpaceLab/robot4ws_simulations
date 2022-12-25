@@ -31,6 +31,7 @@ ArchimedeKinematicsPlugin::~ArchimedeKinematicsPlugin()
 void ArchimedeKinematicsPlugin::loadParameters(void)
 {
     this -> _ros_node -> param<std::string>("dinamixel_topic_name", this -> _dinamixel_topic_name, "cmd_vel_motors");
+    this -> _ros_node -> param<double>("ctrl_rate", this -> _ctrl_rate, 10);
     this -> _ros_node -> param<std::string>("odom_topic_name", this -> _odo_topic_name, "odom");
     this -> _ros_node -> param<std::string>("odom_frame_name", this -> _odometry_frame_name, "odom");
     this -> _ros_node -> param<double>("odom_rate", this -> _odom_update_rate, 10);
@@ -46,9 +47,9 @@ void ArchimedeKinematicsPlugin::loadParameters(void)
     double pid_velocity_p, pid_velocity_d, pid_velocity_i;
     double pid_position_p, pid_position_d, pid_position_i;
 
-    this -> _ros_node -> param<double>("pid_values_velocity_p", pid_velocity_p, 0.1);
-    this -> _ros_node -> param<double>("pid_values_velocity_d", pid_velocity_d, 0);
-    this -> _ros_node -> param<double>("pid_values_velocity_i", pid_velocity_i, 0);
+    this -> _ros_node -> param<double>("pid_values_velocity_p", pid_velocity_p, 20);
+    this -> _ros_node -> param<double>("pid_values_velocity_d", pid_velocity_d, 0.0);
+    this -> _ros_node -> param<double>("pid_values_velocity_i", pid_velocity_i, 0.0);
 
 
     /*this -> _gazebo_ros -> getParameter<double>(pid_velocity_p, "pid_values_velocity_p", 0.1);
@@ -56,18 +57,18 @@ void ArchimedeKinematicsPlugin::loadParameters(void)
     this -> _gazebo_ros -> getParameter<double>(pid_velocity_i, "pid_values_velocity_i", 0);*/
 
 
-    this -> _pid_vel = common::PID(pid_velocity_p, pid_velocity_d, pid_velocity_i);
+    this -> _pid_vel = common::PID(pid_velocity_p, pid_velocity_i, pid_velocity_d);
 
-    this -> _ros_node -> param<double>("pid_values_position_p", pid_position_p, 0.1);
-    this -> _ros_node -> param<double>("pid_values_position_d", pid_position_d, 0);
-    this -> _ros_node -> param<double>("pid_values_position_i", pid_position_i, 0);
+    this -> _ros_node -> param<double>("pid_values_position_p", pid_position_p, 20);
+    this -> _ros_node -> param<double>("pid_values_position_d", pid_position_d, 0.0);
+    this -> _ros_node -> param<double>("pid_values_position_i", pid_position_i, 0.0);
 
     /*this -> _gazebo_ros -> getParameter<double>(pid_position_p, "pid_values_position_p", 0.1);
     this -> _gazebo_ros -> getParameter<double>(pid_position_d, "pid_values_position_d", 0);
     this -> _gazebo_ros -> getParameter<double>(pid_position_i, "pid_values_position_i", 0);*/
 
 
-    this -> _pid_pos = common::PID(pid_position_p, pid_position_d, pid_position_i);
+    this -> _pid_pos = common::PID(pid_position_p, pid_position_i, pid_position_d);
 
     ROS_INFO("Parameters loaded correctly");
 
@@ -107,35 +108,25 @@ void ArchimedeKinematicsPlugin::Load(physics::ModelPtr model, sdf::ElementPtr sd
     //this -> _gazebo_ros = GazeboRosPtr(new GazeboRos(this -> _model, this -> _sdf, "ArchimedeKinematicsPlugin"));
     this -> _ros_node = new ros::NodeHandle();
 
-    ROS_INFO("STEP 1");
-
 
     //this -> _ros_node ->ok();
     //this -> _gazebo_ros -> isInitialized();
-
-    ROS_INFO("STEP 2");
 
 
     //Initialize motors mapping
     this -> initializeMotorsMapping();
 
-    ROS_INFO("STEP 3");
-
     // Load ROS parameters
     this ->loadParameters();
-
-    ROS_INFO("STEP 4");
-
 
 
     // Initialize PID controllers
     this -> initializeControllers();
 
-    ROS_INFO("STEP 5");
 
 
     ros::SubscribeOptions sub_opt = ros::SubscribeOptions::create<robot4ws_msgs::Dynamixel_parameters1>(this -> _dinamixel_topic_name,
-                                     1, boost::bind(&ArchimedeKinematicsPlugin::commandsCallback, this, _1), ros::VoidPtr(), &this -> _queue);
+                                     100, boost::bind(&ArchimedeKinematicsPlugin::commandsCallback, this, _1), ros::VoidPtr(), &this -> _queue);
 
     this -> _dinamixels_sub = this -> _ros_node  -> subscribe(sub_opt);
     ROS_INFO("Subscribing to topic [%s]", this -> _dinamixel_topic_name.c_str());
@@ -155,6 +146,12 @@ void ArchimedeKinematicsPlugin::Load(physics::ModelPtr model, sdf::ElementPtr sd
 }
 
 void ArchimedeKinematicsPlugin::initializeMotorsMapping(void)
+/**
+* Description of the function/method
+*
+* @param <param> Description of the parameter
+* @return Description of the return value
+*/
 {
     //Write here the motors mapping
     this -> _motor_mapping = {{0, "Archimede_br_drive_joint"},
@@ -187,7 +184,7 @@ bool ArchimedeKinematicsPlugin::initializeControllers(void)
 
     for (int i=0; i < MOTORS; i++)
     {
-        this -> _joints[i] = this -> _model -> GetJoint(this -> _motor_mapping[0]);
+        this -> _joints[i] = this -> _model -> GetJoint(this -> _motor_mapping[i]);
 
         //Apply here a PID controller to the joint
         if (i < MOTORS/2)
@@ -222,7 +219,7 @@ void ArchimedeKinematicsPlugin::Reset(void)
 void ArchimedeKinematicsPlugin::OnUpdate(void)
 {
 #if GAZEBO_MAJOR_VERSION >=8
-    common::Time time_noe = this -> _model -> GetWorld() -> SimYime();
+    common::Time time_noe = this -> _model -> GetWorld() -> SimTime();
 #else
     common::Time time_now = this -> _model -> GetWorld() -> GetSimTime();
 #endif
@@ -237,17 +234,27 @@ void ArchimedeKinematicsPlugin::OnUpdate(void)
 
 void ArchimedeKinematicsPlugin::commandsCallback(const robot4ws_msgs::Dynamixel_parameters1::ConstPtr &dyn_msg)
 {
+    //std::cerr << "pippo\n";
     boost::mutex::scoped_lock scoped_lock(this -> lock);
-
+    
     // Fill the list with the last received commands
-    this -> _last_filtered_commands[0] = dyn_msg -> One_Primary;
-    this -> _last_filtered_commands[1] = dyn_msg -> Two_Primary;
+    this -> _last_filtered_commands[0] = -dyn_msg -> One_Primary;
+    this -> _last_filtered_commands[1] = -dyn_msg -> Two_Primary;
     this -> _last_filtered_commands[2] = dyn_msg -> Three_Primary;
     this -> _last_filtered_commands[3] = dyn_msg -> Four_Primary;
     this -> _last_filtered_commands[4] = dyn_msg -> Five_Primary;
     this -> _last_filtered_commands[5] = dyn_msg -> Six_Primary;
     this -> _last_filtered_commands[6] = dyn_msg -> Seven_Primary;
     this -> _last_filtered_commands[7] = dyn_msg -> Eight_Primary;
+
+    for (int i=0; i<8; i++)
+    {
+        std::cerr << this -> _last_filtered_commands[i] << "\t";
+        if (i==7)
+        {
+            std::cerr << "\n";
+        }
+    }
 
     this -> applyCommands();
 
@@ -266,7 +273,12 @@ void ArchimedeKinematicsPlugin::applyCommands(void)
         //Apply here a PID controller to the joint
         if (i < MOTORS/2)
         {
-            this -> _model -> GetJointController() -> SetVelocityTarget(this -> _joints[i] -> GetScopedName(), this -> _last_filtered_commands[i]);
+            std::cerr << this -> _joints[i] -> GetScopedName() << ":\t" << this -> _last_filtered_commands[i] << "\t";
+            bool success = this -> _model -> GetJointController() -> SetVelocityTarget(this -> _joints[i] -> GetScopedName(), this -> _last_filtered_commands[i]);
+            if (success)
+            {
+                std::cerr<<"success\n";
+            }
         }
         else
         {
@@ -281,10 +293,15 @@ void ArchimedeKinematicsPlugin::applyCommands(void)
 void ArchimedeKinematicsPlugin::QueueThread(void)
 {
     static const double timeout = 0.01;
-
-    while (this -> is_plugin_running && this -> _ros_node -> ok())
+    ros::Rate rate(this -> _ctrl_rate);
+    while (this -> _ros_node -> ok())
     {
-        this ->_queue.callAvailable(ros::WallDuration(timeout));
+        if (this -> print_debug)
+        {
+            std::cerr << "running\n";
+        }
+        this -> _queue.callAvailable(ros::WallDuration(timeout));
+        rate.sleep();
     }
     
 }

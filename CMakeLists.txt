@@ -20,6 +20,7 @@ endif()
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
+  tf
   roscpp
   rospy
   urdf
@@ -117,13 +118,14 @@ find_package(gazebo REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES robot4ws_simulations
 #  CATKIN_DEPENDS gazebo_ros roscpp rospy urdf xacro
 #  DEPENDS system_lib
     DEPENDS
         roscpp
         gazebo_ros
+        tf
         rospy
         urdf
         xacro
@@ -141,16 +143,28 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 
 
 include_directories(
-# include
+ include
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIR}
   ${GAZEBO_INCLUDE_DIRS}
 )
 
-
+add_library(archimede_utilities SHARED src/utility.cpp include/utility.h)
+add_dependencies(archimede_utilities ${archimede_utilities_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 add_library(archimede_kinematics_gazebo_ros_simulation_plugin SHARED src/archimede_kinematics_plugin.cpp)
 target_link_libraries(archimede_kinematics_gazebo_ros_simulation_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+
+
+add_library(archimede_odometry_gazebo_plugin SHARED src/archimede_odometry.cpp)
+target_link_libraries(archimede_odometry_gazebo_plugin archimede_utilities ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+
+add_library(archimede_get_link_state SHARED src/archimede_get_body_pose.cpp)
+target_link_libraries(archimede_get_link_state ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+
+
+
+#add_dependencies(archimede_odometry_gazebo_plugin ${archimede_utilities_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}

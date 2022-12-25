@@ -1,0 +1,3 @@
+<launch>
+    <node name="Archimede_rviz" pkg="rviz" type="rviz" args="-d $(find robot4ws_simulations)/rviz/archimede.rviz"/>
+</launch>

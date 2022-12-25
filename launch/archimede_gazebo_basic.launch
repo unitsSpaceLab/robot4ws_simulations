@@ -1,17 +1,23 @@
 <launch>
     <arg name="model" default="$(find robot4ws_description)/urdf/rover.urdf.xacro"/>
+
+    <arg name="default_world" default="false"/>
+    <arg name="world_name" default="only_walls.world"/>
+    <arg name="world_path_custom" default="$(find robot4ws_description)/urdf/worlds"/> <!--$(find robot4ws_description)/urdf/worlds/step.world-->
+
     <arg name="use_rviz" default="false"/>
+    <arg name="start_qt_gui" default="false"/>
     <arg name="include_plugins" default="false"/>
-    <arg name="include_kinematics_plugin" default="false"/>
+    <arg name="include_kinematics_plugin" default="true"/>
     <arg name="include_ros_control" default="false"/>
+    <arg name="pos_x" default="0"/>
+    <arg name="pos_y" default="0"/>
+    <arg name="pos_z" default="2"/>
 
     <param name="robot_description" command="$(find xacro)/xacro $(arg model) include_plugins:=$(arg include_plugins)
      include_kinematics_plugin:=$(arg include_kinematics_plugin) include_ros_control:=$(arg include_ros_control)"/>
 
-
-
-    <arg name="default_world" default="true"/>
-    <arg name="world_path_custom" default=""/> <!--$(find robot4ws_description)/urdf/worlds/step.world-->
+    
 
     <group if="$(arg include_kinematics_plugin)">
         <rosparam command="load" file="$(find robot4ws_simulations)/config/kinematics_config.yaml"/>
@@ -21,7 +27,7 @@
     <group unless="$(arg default_world)">
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
             <!-- <arg name="physics" value="ode"/> -->
-            <arg name="world_name" value="$(arg world_path_custom)"/>
+            <arg name="world_name" value="$(arg world_path_custom)/$(arg world_name)"/>
             <arg name="paused" value="true"/>
             <arg name="use_sim_time" value="true"/>
             <arg name="gui" value="true"/>
@@ -39,17 +45,24 @@
     </group>
 
 
-    <node name="archimede_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model Archimede"/>
+    <node name="archimede_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model Archimede -x $(arg pos_x) -y $(arg pos_y) -z $(arg pos_z)"/>
+    <node name="archimede_base_footprint" pkg="tf" type="static_transform_publisher" args="0 0 0.16 0 0 0 Archimede_foot_print Archimede_base_link 100"/>
 
 
-
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ns="Archimede">
+        <!-- <remap from="joint_states" to="/Archimede/joint_states"/> -->
     </node>
 
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+    <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/> -->
+
+    <include file="$(find robot4ws_description)/launch/controllers.launch"/>
 
     <group if="$(arg use_rviz)">
         <node name="archimede_rviz_node" pkg="rviz" type="rviz" args="-d $(find robot4ws_description)/rviz/default.rviz"/>
+    </group>
+
+    <group if="$(arg start_qt_gui)">
+        <node name="archimede_gui" pkg="rqt_gui" type="rqt_gui"/>
     </group>
 
 

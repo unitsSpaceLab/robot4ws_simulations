@@ -1,13 +1,15 @@
 dinamixel_topic_name: "cmd_vel_motors"
-odom_topic_name: "odom"
-odom_frame_name: "odom"
-odom_rate: 10 #Hz
-
-pid_values_velocity_p: 2000
-pid_values_velocity_d: 0.1
-pid_values_velocity_i: 0.01
+ctrl_rate: 10 #Hz
 
 
-pid_values_position_p: 2000
-pid_values_position_d: 0.1
-pid_values_position_i: 0.01
+pid_values_velocity_p: 50
+pid_values_velocity_d: 0.005
+pid_values_velocity_i: 5
+
+
+pid_values_position_p: 50
+pid_values_position_d: 5
+pid_values_position_i: 5
+
+
+publish_real_tf: true
