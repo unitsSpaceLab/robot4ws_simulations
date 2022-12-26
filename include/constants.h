@@ -21,6 +21,7 @@ struct fake_publishers_config
     string motorTemperatureTopicName;
     string soundTopicName;
     string jointStateTopicName;
+    string sensorStateTopicName;
 };
 
 

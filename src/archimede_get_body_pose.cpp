@@ -62,6 +62,11 @@ void ArchimedeGetLinkPose::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
         this -> _readCOG = _sdf -> GetElement("readCOG") -> Get<bool>();
     }
 
+    if (_sdf -> HasElement("worldMode"))
+    {
+        this -> _world_mode = _sdf -> GetElement("worldMode") -> Get<bool>();
+    }
+
     if (this -> print_debug_)
     {
         std::cerr << "Save Dir path is:\t" << this -> save_dir << '\n'; // (1)
@@ -122,17 +127,29 @@ void ArchimedeGetLinkPose::updateFileWrite(bool print_values)
     ignition::math::Vector3d ang_vel;
 
 #if GAZEBO_MAJOR_VERSION >= 8
-    if (this -> _readCOG)
+    if (this -> _world_mode)
     {
-        pose = this -> link_ -> WorldCoGPose();
-        vel = this -> link_ -> WorldCoGLinearVel();
+        if (this -> _readCOG)
+        {
+            if (this ->_world_mode)
+            {
+                pose = this -> link_ -> WorldCoGPose();
+                vel = this -> link_ -> WorldCoGLinearVel();
+            }
+        }
+        else
+        {
+            pose = this -> link_ -> WorldPose();
+            vel = this -> link_ -> WorldLinearVel();
+        }
+        ang_vel = this -> link_ -> WorldAngularVel();
     }
     else
     {
-        pose = this -> link_ -> WorldPose();
-        vel = this -> link_ -> WorldLinearVel();
+        pose = this -> link_ -> RelativePose();
+        vel = this -> link_ -> RelativeLinearVel();
+        ang_vel = this -> link_ -> RelativeAngularVel();
     }
-    ang_vel = this -> link_ -> WorldAngularVel();
 #else
     pose = this -> link_ -> GetWorldCoGPose().Ign();
     vel = this -> link_ -> GetWorldCoGLinearVel().Ign();

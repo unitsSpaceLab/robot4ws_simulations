@@ -44,6 +44,8 @@ namespace gazebo
 
             bool _readCOG = false;
 
+            bool _world_mode = true;
+
             physics::ModelPtr model;
 
             physics::WorldPtr world;

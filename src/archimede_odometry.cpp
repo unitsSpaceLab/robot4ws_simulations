@@ -23,6 +23,7 @@ ArchimedeOdometryPlugin::ArchimedeOdometryPlugin() : ModelPlugin()
     // Class constructor for Archimede odometry plugin
     ROS_INFO("Starting Archimede ROS-Gazebo Odometry plugin...");
     this -> _joints.resize(MOTORS);
+    this -> _integrator = "Euler";
 
 }
 
@@ -75,6 +76,14 @@ void gazebo::ArchimedeOdometryPlugin::OnUpdate(void)
 
     // Read Wheels Encoders
     std::pair<std::vector<double>, std::vector<double>> res = this -> readEncoders();
+    static bool _odom_initialized = false;
+
+    if (!_odom_initialized)
+    {
+        std::cout << "INITIALIZING ODOM TRAPEZI\n";
+        this -> _last_readings = res;
+        _odom_initialized = true;
+    }
     //first=wheels && second=steering
 
 
@@ -96,10 +105,26 @@ void gazebo::ArchimedeOdometryPlugin::OnUpdate(void)
     //Update the odometry here....
 
     //Update B matrix
-    for (int i=0; i < res.first.size(); i++)
+    if (this -> _integrator == "Euler")
+        for (int i=0; i < res.first.size(); i++)
+        {
+            this -> B_Matrix[i][0] = this -> _joint_mapping[i].geom.R * res.first[i] * cos(res.second[i]);
+            this -> B_Matrix[i+4][0] = this -> _joint_mapping[i].geom.R * res.first[i]*sin(res.second[i]);
+        }
+    else if (this -> _integrator == "Trapezi")
     {
-        this -> B_Matrix[i][0] = this -> _joint_mapping[i].geom.R * res.first[i] * cos(res.second[i]);
-        this -> B_Matrix[i+4][0] = this -> _joint_mapping[i].geom.R * res.first[i]*sin(res.second[i]);
+        for (int i=0; i < res.first.size(); i++)
+        {
+            this -> B_Matrix[i][0] = 0.5*(this -> _joint_mapping[i].geom.R * res.first[i] * cos(res.second[i]) +
+            this -> _joint_mapping[i].geom.R * this ->_last_readings.first[i] * cos(this -> _last_readings.second[i]));
+            this -> B_Matrix[i+4][0] = 0.5*(this -> _joint_mapping[i].geom.R * res.first[i] * sin(res.second[i]) +
+            this -> _joint_mapping[i].geom.R * this ->_last_readings.first[i] * sin(this -> _last_readings.second[i]));
+        }
+    }
+    else
+    {
+        std::cout << "Not supported!\n";
+        this -> ~ArchimedeOdometryPlugin();
     }
 
     std::vector<std::vector<double> > x_dot = MatrixMultiplication(this -> P_inv_A, this -> B_Matrix);
@@ -117,7 +142,8 @@ void gazebo::ArchimedeOdometryPlugin::OnUpdate(void)
 
     double new_theta = ang_vel*delta_t + this -> last_theta;
 
-    double tmp_theta = (this -> last_theta + new_theta)/2;
+    //double tmp_theta = (this -> last_theta + new_theta)/2;
+    double tmp_theta = this -> last_theta;
 
 
     
@@ -147,11 +173,12 @@ void gazebo::ArchimedeOdometryPlugin::OnUpdate(void)
     {
         std::cout << "x_dot: " << inertial_vel.X() << "\t y_dot: " << inertial_vel.Y() << "\t z_dot: " << inertial_vel.Z() << "\n";
     }
-    
+
     this -> last_pose += inertial_vel*delta_t;
     this -> last_theta = new_theta;
 
     this -> last_update_time = time_current_reading;
+    this -> _last_readings = res;
 
     //std::cout << this -> last_pose << "\n";
 
@@ -234,6 +261,7 @@ void ArchimedeOdometryPlugin::initializeROSelements(void)
         this -> _fake_pub_list.push_back(this -> _nh -> advertise<robot4ws_msgs::Motor_current_int>(this -> _odom_config.fake_publishers.motorCurrentTopicName, 1));
         this -> _fake_pub_list.push_back(this -> _nh -> advertise<robot4ws_msgs::Motor_temperature_int>(this -> _odom_config.fake_publishers.motorTemperatureTopicName,1));
         this -> _fake_pub_list.push_back(this -> _nh -> advertise<robot4ws_msgs::Sound>(this -> _odom_config.fake_publishers.soundTopicName,1));
+        this -> _fake_pub_list.push_back(this -> _nh -> advertise<robot4ws_msgs::SensorState>(this -> _odom_config.fake_publishers.sensorStateTopicName, 1));
     }
 }
 
@@ -457,6 +485,19 @@ void ArchimedeOdometryPlugin::printJointsInfo(void)
 
 void gazebo::ArchimedeOdometryPlugin::_parseSDFparams(void)
 {
+
+    if (this -> _sdf -> HasElement("integrator"))
+    {
+        this -> _integrator = this -> _sdf -> GetElement("integrator") -> Get<std::string>();
+    }
+    else
+    {
+        this -> _integrator = "Euler";
+    }
+
+
+
+
     if (this -> _sdf -> HasElement("odomTopicName"))
     {
         this -> _odom_config.odom_topic_name = this -> _sdf -> GetElement("odomTopicName") -> Get<std::string>();
@@ -547,5 +588,15 @@ void gazebo::ArchimedeOdometryPlugin::_parseSDFparams(void)
     else
     {
         this -> _odom_config.fake_publishers.jointStateTopicName = "fake_joint_state";
+    }
+
+
+    if (this -> _sdf -> HasElement("SensorStateTopicName"))
+    {
+        this -> _odom_config.fake_publishers.sensorStateTopicName = this -> _sdf -> GetElement("SensorStateTopicName") ->Get<std::string>();
+    }
+    else
+    {
+        this -> _odom_config.fake_publishers.sensorStateTopicName = "sensor_state";
     }
 }

@@ -21,6 +21,7 @@
 #include <robot4ws_msgs/Operating_modes_int.h>
 #include <robot4ws_msgs/Sound.h>
 #include <robot4ws_msgs/JointState1.h>
+#include <robot4ws_msgs/SensorState.h>
 
 
 // Include Gazebo related stuff
@@ -79,10 +80,13 @@ namespace gazebo
 
             void _parseSDFparams(void);
 
+
+            std::string _integrator;
+
             event::ConnectionPtr connection;
 
             bool print_debug = false;
-            bool print_mapping_debug = false;
+            bool print_mapping_debug = true;
             bool print_joints_info = false;
             bool debug_matrices = false;
             bool print_wheel_readings = false;
@@ -119,6 +123,10 @@ namespace gazebo
 
             //Time stuff
             common::Time last_update_time;
+
+
+            //Last motors readings
+            std::pair<std::vector<double>, std::vector<double>> _last_readings;
 
 
             //Pose stuffs

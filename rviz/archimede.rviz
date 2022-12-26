@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /TF1
         - /TF1/Frames1
       Splitter Ratio: 0.4320322871208191
     Tree Height: 332
@@ -194,71 +195,71 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         Archimede_base_link:
           Value: true
         Archimede_base_link_dummy:
-          Value: true
+          Value: false
         Archimede_base_link_real:
           Value: true
         Archimede_bl_steer_link:
-          Value: true
+          Value: false
         Archimede_bl_wheel_link:
-          Value: true
+          Value: false
         Archimede_br_steer_link:
-          Value: true
+          Value: false
         Archimede_br_wheel_link:
-          Value: true
+          Value: false
         Archimede_fl_steer_link:
-          Value: true
+          Value: false
         Archimede_fl_wheel_link:
-          Value: true
+          Value: false
         Archimede_foot_print:
-          Value: true
+          Value: false
         Archimede_fr_steer_link:
-          Value: true
+          Value: false
         Archimede_fr_wheel_link:
-          Value: true
+          Value: false
         Archimede_imu_link:
-          Value: true
+          Value: false
         Archimede_pi_camera_color_optical_frame:
-          Value: true
+          Value: false
         Archimede_pi_camera_link:
-          Value: true
+          Value: false
         Archimede_realsense_d435i_link:
-          Value: true
+          Value: false
         Archimede_scan_link:
-          Value: true
+          Value: false
         odom:
-          Value: true
+          Value: false
         rs_d435i_accel_frame:
-          Value: true
+          Value: false
         rs_d435i_accel_optical_frame:
-          Value: true
+          Value: false
         rs_d435i_bottom_screw_frame:
-          Value: true
+          Value: false
         rs_d435i_color_frame:
-          Value: true
+          Value: false
         rs_d435i_color_optical_frame:
-          Value: true
+          Value: false
         rs_d435i_depth_frame:
-          Value: true
+          Value: false
         rs_d435i_depth_optical_frame:
-          Value: true
+          Value: false
         rs_d435i_gyro_frame:
-          Value: true
+          Value: false
         rs_d435i_gyro_optical_frame:
-          Value: true
+          Value: false
         rs_d435i_infra1_frame:
-          Value: true
+          Value: false
         rs_d435i_infra1_optical_frame:
-          Value: true
+          Value: false
         rs_d435i_infra2_frame:
-          Value: true
+          Value: false
         rs_d435i_infra2_optical_frame:
-          Value: true
+          Value: false
         rs_d435i_link:
-          Value: true
+          Value: false
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -324,9 +325,11 @@ Visualization Manager:
       Unreliable: false
       Value: true
       Visibility:
+        Effort: true
         Grid: true
         Imu: true
         LaserScan: true
+        Marker: true
         Odometry: true
         PointCloud2: true
         RobotModel: true
@@ -384,7 +387,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.009999999776482582
       Style: Flat Squares
-      Topic: /Archimede/depth/color/points
+      Topic: /Archimede/d435i_camera/depth/color/points
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -432,6 +435,35 @@ Visualization Manager:
       Topic: /Archimede/odom
       Unreliable: false
       Value: true
+    - Alpha: 1
+      Class: rviz/Effort
+      Enabled: true
+      History Length: 1
+      Joints:
+        Archimede_bl_steer_joint:
+          Value: true
+        Archimede_br_steer_joint:
+          Value: true
+        Archimede_fl_steer_joint:
+          Value: true
+        Archimede_fr_steer_joint:
+          Value: true
+      Name: Effort
+      Robot Description: robot_description
+      Scale: 1
+      TF Prefix: ""
+      Topic: ""
+      Unreliable: false
+      Value: true
+      Width: 0.019999999552965164
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /markers_pub
+      Name: Marker
+      Namespaces:
+        "": true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 255; 255; 255
@@ -460,25 +492,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.31145715713501
+      Distance: 4.965044021606445
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.3552078306674957
-        Y: -0.8540189862251282
-        Z: -0.3615267276763916
+        X: 0.02625773288309574
+        Y: 1.265172004699707
+        Z: 0.9842780828475952
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3597955107688904
+      Pitch: 1.3097951412200928
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.86356520652771
+      Yaw: 4.7885613441467285
     Saved: ~
 Window Geometry:
   Camera:

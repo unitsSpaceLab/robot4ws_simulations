@@ -43,7 +43,6 @@ void ArchimedeKinematicsPlugin::loadParameters(void)
     this -> _gazebo_ros -> getParameter<std::string>(this -> _odometry_frame_name, "odom_frame_name", "odom");
     this -> _gazebo_ros -> getParameter<double>(this -> _odom_update_rate, "odom_rate", 10);*/
 
-
     double pid_velocity_p, pid_velocity_d, pid_velocity_i;
     double pid_position_p, pid_position_d, pid_position_i;
 

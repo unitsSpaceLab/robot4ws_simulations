@@ -12,10 +12,20 @@
     <arg name="include_ros_control" default="false"/>
     <arg name="pos_x" default="0"/>
     <arg name="pos_y" default="0"/>
-    <arg name="pos_z" default="2"/>
+    <arg name="pos_z" default="0.17"/>
+
+    <!-- Model related arguments -->
+    <arg name="show_imu" default="false"/>
+    <arg name="show_cameras" default="false"/>
+    <arg name="show_laser_scan" default="false"/>
+    <arg name="show_pi_camera" default="false"/>
+    <arg name="show_realsense" default="false"/>
+
 
     <param name="robot_description" command="$(find xacro)/xacro $(arg model) include_plugins:=$(arg include_plugins)
-     include_kinematics_plugin:=$(arg include_kinematics_plugin) include_ros_control:=$(arg include_ros_control)"/>
+     include_kinematics_plugin:=$(arg include_kinematics_plugin) include_ros_control:=$(arg include_ros_control)
+     show_cameras:=$(arg show_cameras) visualize_scan:=$(arg show_laser_scan) visualize_imu:=$(arg show_imu)
+     visualize_pi_camera:=$(arg show_pi_camera) visualize_realsense:=$(arg show_realsense)"/>
 
     
 
