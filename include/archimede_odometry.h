@@ -59,7 +59,7 @@ namespace gazebo
             virtual ~ArchimedeOdometryPlugin();
 
             void Load(physics::ModelPtr model, sdf::ElementPtr sdf);
-            virtual void OnUpdate(void);
+            virtual bool OnUpdate(void);
             void Reset(void);
 
             void publishOdom(void);
@@ -82,6 +82,7 @@ namespace gazebo
 
 
             std::string _integrator;
+            std::string _odom_mode;
 
             event::ConnectionPtr connection;
 
@@ -145,6 +146,13 @@ namespace gazebo
 
             //Define transform broadcaster
             tf::TransformBroadcaster _tf;
+
+
+            //Last delta wheels displacement
+            double _last_delta_s_forward[MOTORS/2] = {0,};
+
+            int _skip_frames;
+            int _step;
 
 
 

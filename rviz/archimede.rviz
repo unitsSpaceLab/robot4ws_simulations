@@ -7,6 +7,8 @@ Panels:
         - /Global Options1
         - /TF1
         - /TF1/Frames1
+        - /Odometry1
+        - /Odometry1/Shape1
       Splitter Ratio: 0.4320322871208191
     Tree Height: 332
   - Class: rviz/Selection
@@ -427,10 +429,10 @@ Visualization Manager:
         Axes Length: 1
         Axes Radius: 0.10000000149011612
         Color: 255; 25; 0
-        Head Length: 0.30000001192092896
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 0.05000000074505806
+        Head Length: 0.05000000074505806
+        Head Radius: 0.05000000074505806
+        Shaft Length: 0.20000000298023224
+        Shaft Radius: 0.009999999776482582
         Value: Arrow
       Topic: /Archimede/odom
       Unreliable: false
@@ -461,7 +463,7 @@ Visualization Manager:
       Marker Topic: /markers_pub
       Name: Marker
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
@@ -492,25 +494,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.965044021606445
+      Distance: 0.8033512830734253
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.02625773288309574
-        Y: 1.265172004699707
-        Z: 0.9842780828475952
+        X: 0.23677502572536469
+        Y: -0.35928773880004883
+        Z: 0.5473743677139282
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.3097951412200928
+      Pitch: 0.3997957408428192
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.7885613441467285
+      Yaw: 4.683559417724609
     Saved: ~
 Window Geometry:
   Camera:

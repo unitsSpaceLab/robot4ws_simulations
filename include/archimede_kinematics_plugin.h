@@ -88,6 +88,7 @@ namespace gazebo
 
             bool debug_params = true;
             bool debug_speeds = true;
+            bool print_commands_status = false;
 
             physics::ModelPtr _model;
             sdf::ElementPtr _sdf;
@@ -136,8 +137,9 @@ namespace gazebo
             common::Time _last_command_received_time;
             common::Time _last_data_sent;
 
-
+            // Last commands received container
             double _last_filtered_commands[MOTORS] = {0,};
+            
 
 
 

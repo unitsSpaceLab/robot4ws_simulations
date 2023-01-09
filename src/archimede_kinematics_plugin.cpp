@@ -218,7 +218,7 @@ void ArchimedeKinematicsPlugin::Reset(void)
 void ArchimedeKinematicsPlugin::OnUpdate(void)
 {
 #if GAZEBO_MAJOR_VERSION >=8
-    common::Time time_noe = this -> _model -> GetWorld() -> SimTime();
+    common::Time time_now = this -> _model -> GetWorld() -> SimTime();
 #else
     common::Time time_now = this -> _model -> GetWorld() -> GetSimTime();
 #endif
@@ -226,6 +226,30 @@ void ArchimedeKinematicsPlugin::OnUpdate(void)
 
     //Apply last received commands
     //this -> applyCommands();
+    double status;
+    double target;
+    double diff;
+    if (this -> print_commands_status)
+    {
+        std::cout << "************************************************************************\n";
+        for (int i=0; i < this -> _joints.size(); i++)
+        {
+            target = this -> _last_filtered_commands[i];
+            if (i < MOTORS/2)
+            {
+                status = this -> _joints[i] -> GetVelocity( 0 );
+            }
+            else
+            {
+                status = this -> _joints[i] -> Position( 0 );
+            }
+            diff = target-status;
+            std::cerr << this -> _joints[i] -> GetName() << "\t commanded value:  [ " <<  target << " ] \t current value: [ " << status
+             << " ] \t error: [ " << diff << " ]\n";
+        }
+    }
+    this -> _model -> GetJointController() -> Update();
+    //std::cerr << "gazebo_plugin_running";
 
 
 }
@@ -256,9 +280,6 @@ void ArchimedeKinematicsPlugin::commandsCallback(const robot4ws_msgs::Dynamixel_
     }
 
     this -> applyCommands();
-
-    this -> _model -> GetJointController() -> Update();
-
 }
 
 
@@ -272,12 +293,12 @@ void ArchimedeKinematicsPlugin::applyCommands(void)
         //Apply here a PID controller to the joint
         if (i < MOTORS/2)
         {
-            std::cerr << this -> _joints[i] -> GetScopedName() << ":\t" << this -> _last_filtered_commands[i] << "\t";
+            //std::cerr << this -> _joints[i] -> GetScopedName() << ":\t" << this -> _last_filtered_commands[i] << "\t";
             bool success = this -> _model -> GetJointController() -> SetVelocityTarget(this -> _joints[i] -> GetScopedName(), this -> _last_filtered_commands[i]);
-            if (success)
+            /*if (success)
             {
                 std::cerr<<"success\n";
-            }
+            }*/
         }
         else
         {
