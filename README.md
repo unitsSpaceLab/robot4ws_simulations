@@ -1,4 +1,5 @@
 # robot4ws_simulations
+This package is used to load and run the simulation in Gazebo of the Archimede rover, with (not yet developed) or without the differential.
 
 
 
@@ -96,6 +97,12 @@ When simulating:
 * Check the ```Simulation``` checkbox.
 
 Use the ```Teleop``` and ```Experimental testing``` tabs to control the robot.
+
+### To add a subscriber
+In the app ```properties``` add the variable for the subscriber you want to subscribe to, e.g. ```gazebo_link_states_subscriber```.
+
+In ```initialize(app)```, in the simulation mode part of the ```if```, add the subscription function call:
+```app.gazebo_link_states_subscriber = rossubscriber("/gazebo/link_states");```
 
 
 
