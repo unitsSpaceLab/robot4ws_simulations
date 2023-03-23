@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# @author: Matteo Caruso
+# @email: matteo.caruso@phd.units.it
+# @email: matteo.caruso1993@gmail.com
+
 # Parse arguments
 while getops "c:" flag; do
     case $flag in

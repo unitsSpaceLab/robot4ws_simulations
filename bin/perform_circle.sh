@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# @author: Matteo Caruso
+# @email: matteo.caruso@phd.units.it
+# @email: matteo.caruso1993@gmail.com
 
 source ~/catkin_ws/devel/setup.bash
 
