@@ -43,7 +43,10 @@ Change the url from ```api.ignitionfuel.org``` to ```api.ignitionrobotics.org```
 * robot4ws_teleop_keyboard: [repository](https://github.com/matteocaruso1993/rover4ws_teleop_keyboard)
 * robot4ws_teleop_controller: [repository](https://github.com/matteocaruso1993/robot4ws-teleop-joystick)
 * hector_gazebo_plugins: [repository](http://wiki.ros.org/action/fullsearch/hector_gazebo_plugins?action=fullsearch&context=180&value=linkto%3A%22hector_gazebo_plugins%22)
+* (Depends from the forked version of ros-realsense repository) realsense-ros-gazebo [repository](https://github.com/rickstaa/realsense-ros-gazebo)
 ``` sudo apt-get install ros-melodic-hector-gazebo-plugins ```
+
+
 
 
 
