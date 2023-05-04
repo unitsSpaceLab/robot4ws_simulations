@@ -72,7 +72,7 @@
 
 
     <node name="archimede_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model Archimede -x $(arg pos_x) -y $(arg pos_y) -z $(arg pos_z) -R $(arg pos_roll) -P $(arg pos_pitch) -Y $(arg pos_yaw)"/>
-    <node name="archimede_base_footprint" pkg="tf" type="static_transform_publisher" args="0 0 0.16 0 0 0 Archimede_foot_print Archimede_base_link 100"/>
+    <node name="archimede_base_footprint" pkg="tf" type="static_transform_publisher" args="0 0 0.16 0 0 0 Archimede_foot_print Archimede_base_link 1"/>
 
 
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ns="Archimede">
