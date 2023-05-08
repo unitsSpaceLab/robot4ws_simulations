@@ -8,7 +8,7 @@
     <arg name="model" default="$(find robot4ws_description)/urdf/rover.urdf.xacro"/>
 
     <arg name="default_world" default="false"/>
-    <arg name="world_name" default="only_walls_and_obstacles.world"/>
+    <arg name="world_name" default="tilted_floor_walls_and_obstacles.world"/>
     <!-- <arg name="world_name" default="MSL_Gale_DEM_Mosaic_1m_v3_X_14315-14364_Y_47079-47098_v1.world"/> -->
     <arg name="world_path_custom" default="$(find robot4ws_description)/urdf/worlds"/> <!--$(find robot4ws_description)/urdf/worlds/step.world-->
 
