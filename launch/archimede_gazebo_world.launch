@@ -8,10 +8,10 @@
     <arg name="model" default="$(find robot4ws_description)/urdf/rover.urdf.xacro"/>
 
     <arg name="default_world" default="false"/>
-    <arg name="world_name" default="tilted_floor_walls_and_obstacles.world"/>
+    <arg name="world_name" default="yosemite.world"/>
     <!-- <arg name="world_name" default="MSL_Gale_DEM_Mosaic_1m_v3_X_14315-14364_Y_47079-47098_v1.world"/> -->
     <arg name="world_path_custom" default="$(find robot4ws_description)/urdf/worlds"/> <!--$(find robot4ws_description)/urdf/worlds/step.world-->
-
+    
     <arg name="use_rviz" default="false"/>
     <arg name="start_qt_gui" default="false"/>
     <arg name="include_plugins" default="true"/>
@@ -35,7 +35,7 @@
     <arg name="show_pi_camera" default="false"/>
     <arg name="show_realsense" default="false"/>
 
-    <arg name="rocker_differential" default="true"/>
+    <arg name="rocker_differential" default="false"/>
 
 
     <param name="robot_description" command="$(find xacro)/xacro $(arg model) include_plugins:=$(arg include_plugins)
