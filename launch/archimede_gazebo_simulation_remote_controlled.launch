@@ -5,8 +5,8 @@
  -->
  
 <launch>
-    <arg "use_joystick" default="false"/>
-    <arg "use_keyboard" default="true"/>
+    <arg name="use_joystick" default="false"/>
+    <arg name="use_keyboard" default="true"/>
 
     <include file="$(find robot4ws_simulations)/launch/archimede_gazebo_simulation_with_kinematics.launch"/>
 
