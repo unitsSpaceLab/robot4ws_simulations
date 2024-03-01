@@ -17,16 +17,38 @@
     <arg name="include_plugins" default="true"/>
     <arg name="include_kinematics_plugin" default="true"/>
     <arg name="include_ros_control" default="false"/>
+    <!-- default on plain terrain -->
     <arg name="pos_x" default="0"/>
     <arg name="pos_y" default="0"/>
     <arg name="pos_z" default="0.17"/>
-    <!-- <arg name="pos_z" default="0.30"/> -->
-    <!-- <arg name="pos_z" default="6.009720"/> <!- for MSL_Gale_DEM_Mosaic_1m_v3_X_14315-14364_Y_47079-47098_v1 -->
     <arg name="pos_roll" default="0"/>
     <arg name="pos_pitch" default="0"/>
-    <arg name="pos_yaw" default="0"/>
+    <arg name="pos_yaw" default="0"/> 
+    <!-- <arg name="pos_z" default="0.30"/> -->
+    <!-- <arg name="pos_z" default="6.009720"/> <!- for MSL_Gale_DEM_Mosaic_1m_v3_X_14315-14364_Y_47079-47098_v1 -->
     <!-- <arg name="pos_pitch" default="0.294121"/> <!- for MSL_Gale_DEM_Mosaic_1m_v3_X_14315-14364_Y_47079-47098_v1 -->
     <!-- <arg name="pos_yaw" default="0"/> -->
+    <!-- for DLR_surface
+    <arg name="pos_x" default="-0.055689"/>
+    <arg name="pos_y" default="0.000065"/>
+    <arg name="pos_z" default="-0.001461"/>
+    <arg name="pos_roll" default="0.048190"/>
+    <arg name="pos_pitch" default="-0.277948"/>
+    <arg name="pos_yaw" default="-0.007554"/> -->
+    <!-- for DLR_surface from pose 470
+    <arg name="pos_x" default="-0.261987"/>
+    <arg name="pos_y" default="-0.257826"/>
+    <arg name="pos_z" default="-0.071591"/>
+    <arg name="pos_roll" default="0.056010"/>
+    <arg name="pos_pitch" default="-0.252984"/>
+    <arg name="pos_yaw" default="-0.098683"/> -->
+    <!-- for DLR_surface from pose 54
+    <arg name="pos_x" default="0.423933"/>
+    <arg name="pos_y" default="-0.201393"/>
+    <arg name="pos_z" default="0.089171"/>
+    <arg name="pos_roll" default="-0.008836"/>
+    <arg name="pos_pitch" default="-0.238980"/>
+    <arg name="pos_yaw" default="0.346001"/> -->
 
     <!-- Model related arguments -->
     <arg name="show_imu" default="false"/>
@@ -37,11 +59,14 @@
 
     <arg name="rocker_differential" default="true"/>
 
+    <arg name="include_terrain_slip_plugin" default="false"/>
+
 
     <param name="robot_description" command="$(find xacro)/xacro $(arg model) include_plugins:=$(arg include_plugins)
      include_kinematics_plugin:=$(arg include_kinematics_plugin) include_ros_control:=$(arg include_ros_control)
      show_cameras:=$(arg show_cameras) visualize_scan:=$(arg show_laser_scan) visualize_imu:=$(arg show_imu)
-     visualize_pi_camera:=$(arg show_pi_camera) visualize_realsense:=$(arg show_realsense) rocker_differential:=$(arg rocker_differential)"/>
+     visualize_pi_camera:=$(arg show_pi_camera) visualize_realsense:=$(arg show_realsense) rocker_differential:=$(arg rocker_differential) 
+     include_terrain_slip_plugin:=$(arg include_terrain_slip_plugin)"/>
 
     
 
@@ -91,8 +116,9 @@
         <node name="archimede_gui" pkg="rqt_gui" type="rqt_gui"/>
     </group>
 
-
-
+    <group if="$(arg include_terrain_slip_plugin)">
+        <node name="terrain_neural_network" pkg="robot4ws-gazebo-plugins" type="archimede_apply_artificial_slip_neural_network_node.py" respawn="false" output="screen" launch-prefix="/home/ros/p38Venv/bin/python3.8"/>
+    </group>
 
 
 

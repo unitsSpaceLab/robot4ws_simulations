@@ -7,13 +7,20 @@
 <launch>
     <arg name="include_plugins" default="true"/>
     <arg name="include_kinematics" default="true"/>
+    <arg name="include_terrain_slip_plugin" default="false"/>
+    <arg name="world_name" default="only_walls.world"/>
 
+    <arg name="kinematics_env" value="/home/ros/p38Venv/bin/python3.8"/>
 
     <include file="$(find robot4ws_simulations)/launch/archimede_gazebo_basic.launch">
         <arg name="include_plugins" value="$(arg include_plugins)"/>
         <arg name="include_kinematics_plugin" value="$(arg include_kinematics)"/>
+        <arg name="include_terrain_slip_plugin" value="$(arg include_terrain_slip_plugin)"/>
+        <arg name="world_name" value="$(arg world_name)"/>
     </include>
 
-    <include file="$(find robot4ws_kinematics)/launch/kinematics.launch"/>
+    <include file="$(find robot4ws_kinematics)/launch/kinematics.launch">
+        <arg name="env" value="$(arg kinematics_env)"/>
+    </include>
 
 </launch>

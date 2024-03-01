@@ -5,10 +5,18 @@
  -->
  
 <launch>
+
     <arg name="use_joystick" default="false"/>
     <arg name="use_keyboard" default="true"/>
+    <arg name="include_terrain_slip_plugin" default="false"/>
+    <arg name="world_name" default="only_walls.world"/>
+    
+    <arg name="teleop_key_env" value="/home/ros/p38Venv/bin/python3.8"/>
 
-    <include file="$(find robot4ws_simulations)/launch/archimede_gazebo_simulation_with_kinematics.launch"/>
+    <include file="$(find robot4ws_simulations)/launch/archimede_gazebo_simulation_with_kinematics.launch">
+        <arg name="include_terrain_slip_plugin" value="$(arg include_terrain_slip_plugin)"/>
+        <arg name="world_name" value="$(arg world_name)"/>
+    </include>
 
 
     <group if="$(arg use_joystick)">
@@ -17,7 +25,9 @@
 
 
     <group if="$(arg use_keyboard)">
-        <include file="$(find robot4ws_teleop_keyboard)/launch/teleop.launch"/>
+        <include file="$(find robot4ws_teleop_keyboard)/launch/teleop.launch">
+            <arg name="env" value="$(arg teleop_key_env)"/>
+        </include>
     </group>
 
 
