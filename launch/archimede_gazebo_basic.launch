@@ -3,7 +3,7 @@
      @email: matteo.caruso@phd.units.it
      @email: matteo.caruso1993@gmail.com
  -->
- 
+
 <launch>
     <arg name="model" default="$(find robot4ws_description)/urdf/rover.urdf.xacro"/>
 
@@ -60,6 +60,8 @@
     <arg name="rocker_differential" default="true"/>
 
     <arg name="include_terrain_slip_plugin" default="false"/>
+    <arg name="neural_network_model" default="best_bagging_all_wheels"/>
+    <arg name="p38_env" default="/home/ros/p38Venv/bin/python3.8"/>
 
 
     <param name="robot_description" command="$(find xacro)/xacro $(arg model) include_plugins:=$(arg include_plugins)
@@ -117,7 +119,8 @@
     </group>
 
     <group if="$(arg include_terrain_slip_plugin)">
-        <node name="terrain_neural_network" pkg="robot4ws-gazebo-plugins" type="archimede_apply_artificial_slip_neural_network_node.py" respawn="false" output="screen" launch-prefix="/home/ros/p38Venv/bin/python3.8"/>
+        <param name="neural_network_model" value="$(arg neural_network_model)"/>
+        <node name="terrain_neural_network" pkg="robot4ws-gazebo-plugins" type="archimede_apply_artificial_slip_neural_network_node.py" respawn="false" output="screen" launch-prefix="$(arg p38_env)"/>
     </group>
 
 

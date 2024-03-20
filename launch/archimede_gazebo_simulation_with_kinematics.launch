@@ -3,24 +3,29 @@
      @email: matteo.caruso@phd.units.it
      @email: matteo.caruso1993@gmail.com
  -->
- 
+
 <launch>
     <arg name="include_plugins" default="true"/>
     <arg name="include_kinematics" default="true"/>
     <arg name="include_terrain_slip_plugin" default="false"/>
+    <arg name="neural_network_model" default="best_bagging_all_wheels"/>
     <arg name="world_name" default="only_walls.world"/>
+    <arg name="rocker_differential" default="true"/>
 
-    <arg name="kinematics_env" value="/home/ros/p38Venv/bin/python3.8"/>
+    <arg name="p38_env" default="/home/ros/p38Venv/bin/python3.8"/>
 
     <include file="$(find robot4ws_simulations)/launch/archimede_gazebo_basic.launch">
         <arg name="include_plugins" value="$(arg include_plugins)"/>
         <arg name="include_kinematics_plugin" value="$(arg include_kinematics)"/>
         <arg name="include_terrain_slip_plugin" value="$(arg include_terrain_slip_plugin)"/>
+        <arg name="neural_network_model" value="$(arg neural_network_model)"/>
+        <arg name="rocker_differential" value="$(arg rocker_differential)"/>
         <arg name="world_name" value="$(arg world_name)"/>
+        <arg name="p38_env" value="$(arg p38_env)"/>
     </include>
 
     <include file="$(find robot4ws_kinematics)/launch/kinematics.launch">
-        <arg name="env" value="$(arg kinematics_env)"/>
+        <arg name="env" value="$(arg p38_env)"/>
     </include>
 
 </launch>
