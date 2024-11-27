@@ -15,12 +15,17 @@
 
     <arg name="p38_env" default="/home/ros/p38Venv/bin/python3.8"/>
 
+	<arg name="add_velodyneHDL32E" default="false"/>
+	<arg name="lidar_organize_cloud" default="false"/>
+
     <include file="$(find robot4ws_simulations)/launch/archimede_gazebo_simulation_with_kinematics.launch">
         <arg name="include_terrain_slip_plugin" value="$(arg include_terrain_slip_plugin)"/>
         <arg name="neural_network_model" value="$(arg neural_network_model)"/>
         <arg name="rocker_differential" value="$(arg rocker_differential)"/>
         <arg name="world_name" value="$(arg world_name)"/>
         <arg name="p38_env" value="$(arg p38_env)"/>
+	    <arg name="add_velodyneHDL32E" value="$(arg add_velodyneHDL32E)"/>
+	    <arg name="lidar_organize_cloud" value="$(arg lidar_organize_cloud)"/>
     </include>
 
 
