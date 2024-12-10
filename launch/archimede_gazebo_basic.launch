@@ -23,7 +23,7 @@
     <arg name="pos_z" default="0.17"/>
     <arg name="pos_roll" default="0"/>
     <arg name="pos_pitch" default="0"/>
-    <arg name="pos_yaw" default="0"/> 
+    <arg name="pos_yaw" default="0"/>
     <!-- <arg name="pos_z" default="0.30"/> -->
     <!-- <arg name="pos_z" default="6.009720"/> <!- for MSL_Gale_DEM_Mosaic_1m_v3_X_14315-14364_Y_47079-47098_v1 -->
     <!-- <arg name="pos_pitch" default="0.294121"/> <!- for MSL_Gale_DEM_Mosaic_1m_v3_X_14315-14364_Y_47079-47098_v1 -->
@@ -107,7 +107,9 @@
 
 
     <node name="archimede_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model Archimede -x $(arg pos_x) -y $(arg pos_y) -z $(arg pos_z) -R $(arg pos_roll) -P $(arg pos_pitch) -Y $(arg pos_yaw)"/>
+    <!-- Archimede_foot_print uses encoders odometry. Uncomment if there is no other tf publisher to Archimede_base_link
     <node name="archimede_base_footprint" pkg="tf" type="static_transform_publisher" args="0 0 0.16 0 0 0 Archimede_foot_print Archimede_base_link 0.01"/>
+    -->
 
 
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ns="Archimede">
