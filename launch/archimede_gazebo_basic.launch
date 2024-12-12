@@ -110,7 +110,7 @@
     <!-- Archimede_foot_print uses encoders odometry. Uncomment if there is no other tf publisher to Archimede_base_link
     <node name="archimede_base_footprint" pkg="tf" type="static_transform_publisher" args="0 0 0.16 0 0 0 Archimede_foot_print Archimede_base_link 0.01"/>
     -->
-
+    <node name="static_tf0" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0.158679999951 0 0 0 /Archimede_footprint /Archimede_base_link"/>
 
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ns="Archimede">
         <!-- <remap from="joint_states" to="/Archimede/joint_states"/> -->
