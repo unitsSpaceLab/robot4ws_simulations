@@ -9,6 +9,7 @@
     <arg name="include_kinematics" default="true"/>
     <arg name="include_terrain_slip_plugin" default="false"/>
     <arg name="neural_network_model" default="best_bagging_all_wheels"/>
+    <arg name="include_wheels_terramechanic_model" default="false"/>
     <arg name="world_name" default="only_walls.world"/>
     <arg name="rocker_differential" default="true"/>
 
@@ -22,6 +23,7 @@
         <arg name="include_kinematics_plugin" value="$(arg include_kinematics)"/>
         <arg name="include_terrain_slip_plugin" value="$(arg include_terrain_slip_plugin)"/>
         <arg name="neural_network_model" value="$(arg neural_network_model)"/>
+	    <arg name="include_wheels_terramechanic_model" value="$(arg include_wheels_terramechanic_model)"/>
         <arg name="rocker_differential" value="$(arg rocker_differential)"/>
         <arg name="world_name" value="$(arg world_name)"/>
         <arg name="p38_env" value="$(arg p38_env)"/>
