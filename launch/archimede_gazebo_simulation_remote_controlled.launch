@@ -9,7 +9,7 @@
     <arg name="use_joystick" default="false"/>
     <arg name="use_keyboard" default="true"/>
     <arg name="include_terrain_slip_plugin" default="false"/>
-    <arg name="neural_network_model" default="best_bagging_all_wheels"/>
+    <arg name="neural_network_model" default="none"/>
     <arg name="include_wheels_terramechanic_model" default="false"/>
     <arg name="world_name" default="only_walls.world"/>
     <arg name="rocker_differential" default="true"/>

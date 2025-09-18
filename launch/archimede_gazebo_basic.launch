@@ -61,7 +61,7 @@
 
     <!-- Terrain slip plugin related arguments -->
     <arg name="include_terrain_slip_plugin" default="false"/>
-    <arg name="neural_network_model" default="best_bagging_all_wheels"/>
+    <arg name="neural_network_model" default="none"/>
 
     <arg name="include_wheels_terramechanic_model" default="false"/>
 
@@ -80,12 +80,12 @@
      include_terrain_slip_plugin:=$(arg include_terrain_slip_plugin) include_wheels_terramechanic_model:=$(arg include_wheels_terramechanic_model)
      add_velodyneHDL32E:=$(arg add_velodyneHDL32E) lidar_organize_cloud:=$(arg lidar_organize_cloud)"/>
 
-    
+
 
     <group if="$(arg include_kinematics_plugin)">
         <rosparam command="load" file="$(find robot4ws_simulations)/config/kinematics_config.yaml"/>
     </group>
-    
+
 
     <group unless="$(arg default_world)">
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -132,7 +132,8 @@
 
     <group if="$(arg include_terrain_slip_plugin)">
         <param name="neural_network_model" value="$(arg neural_network_model)"/>
-        <node name="terrain_neural_network" pkg="robot4ws-gazebo-plugins" type="archimede_apply_artificial_slip_neural_network_node.py" respawn="false" output="screen" launch-prefix="$(arg p38_env)"/>
+        <node name="terrain_ML_model" pkg="robot4ws-gazebo-plugins" type="archimede_apply_artificial_slip_ML.py" respawn="false" output="screen" launch-prefix="$(arg p38_env)"/>
+        <!-- <node name="terrain_neural_network" pkg="robot4ws-gazebo-plugins" type="archimede_apply_artificial_slip_neural_network_node.py" respawn="false" output="screen" launch-prefix="$(arg p38_env)"/> -->
     </group>
 
 
