@@ -13,11 +13,11 @@ def generate_launch_description():
     pkg_share = FindPackageShare('robot4ws_description')
     pkg_sim = FindPackageShare('robot4ws_simulations')
     pkg_plugins = FindPackageShare('robot4ws_gazebo_plugins')
-    
+
     # Get package directory for bridge config
     pkg_share_dir = get_package_share_directory('robot4ws_description')
     bridge_config_file = os.path.join(get_package_share_directory('robot4ws_simulations'), 'config', 'bridge_config.yaml')
-    
+
     # Set Gazebo environment variables
     gz_resource_path = SetEnvironmentVariable(
         'GZ_SIM_RESOURCE_PATH',
@@ -25,21 +25,20 @@ def generate_launch_description():
          os.pathsep,
          PathJoinSubstitution([pkg_share, '..'])]
     )
-    
+
     gz_plugin_path = SetEnvironmentVariable(
         'GZ_SIM_SYSTEM_PLUGIN_PATH',
         [EnvironmentVariable('GZ_SIM_SYSTEM_PLUGIN_PATH', default_value=''),
          os.pathsep,
          PathJoinSubstitution([pkg_plugins, '..', '..', 'lib'])]
     )
-    
+
     # Declare arguments
     args = [
         DeclareLaunchArgument('model', default_value=PathJoinSubstitution([pkg_share, 'urdf', 'rover.urdf.xacro'])),
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         DeclareLaunchArgument('use_rviz', default_value='false'),
         DeclareLaunchArgument('include_plugins', default_value='true'),
-        DeclareLaunchArgument('include_kinematics_plugin', default_value='true'),
         DeclareLaunchArgument('pos_x', default_value='0.0'),
         DeclareLaunchArgument('pos_y', default_value='0.0'),
         DeclareLaunchArgument('pos_z', default_value='0.17'),
@@ -49,24 +48,21 @@ def generate_launch_description():
         DeclareLaunchArgument('show_imu', default_value='false'),
         DeclareLaunchArgument('show_cameras', default_value='false'),
         DeclareLaunchArgument('show_laser_scan', default_value='false'),
-        DeclareLaunchArgument('show_pi_camera', default_value='false'),
         DeclareLaunchArgument('show_realsense', default_value='false'),
         DeclareLaunchArgument('rocker_differential', default_value='false'),
         DeclareLaunchArgument('include_terrain_slip_plugin', default_value='false'),
         DeclareLaunchArgument('add_velodyneHDL32E', default_value='false'),
         DeclareLaunchArgument('lidar_organize_cloud', default_value='false'),
     ]
-    
+
     # Robot description
     robot_description_content = ParameterValue(
         Command([
             'xacro ', LaunchConfiguration('model'),
             ' include_plugins:=', LaunchConfiguration('include_plugins'),
-            ' include_kinematics_plugin:=', LaunchConfiguration('include_kinematics_plugin'),
             ' show_cameras:=', LaunchConfiguration('show_cameras'),
-            ' visualize_scan:=', LaunchConfiguration('show_laser_scan'),
+            ' show_laser_scan:=', LaunchConfiguration('show_laser_scan'),
             ' visualize_imu:=', LaunchConfiguration('show_imu'),
-            ' visualize_pi_camera:=', LaunchConfiguration('show_pi_camera'),
             ' visualize_realsense:=', LaunchConfiguration('show_realsense'),
             ' rocker_differential:=', LaunchConfiguration('rocker_differential'),
             ' include_terrain_slip_plugin:=', LaunchConfiguration('include_terrain_slip_plugin'),
@@ -75,7 +71,7 @@ def generate_launch_description():
         ]),
         value_type=str
     )
-    
+
     # Robot state publisher
     robot_state_publisher = Node(
         package='robot_state_publisher',
@@ -86,24 +82,24 @@ def generate_launch_description():
         }],
         output='screen'
     )
-    
+
     # Joint state publisher
-    joint_state_publisher = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        parameters=[{
-            'robot_description': robot_description_content,
-            'use_sim_time': LaunchConfiguration('use_sim_time')
-        }],
-        output='screen'
-    )
-    
+    # joint_state_publisher = Node(
+    #     package='joint_state_publisher',
+    #     executable='joint_state_publisher',
+    #     parameters=[{
+    #         'robot_description': robot_description_content,
+    #         'use_sim_time': LaunchConfiguration('use_sim_time')
+    #     }],
+    #     output='screen'
+    # )
+
     # Gazebo - empty world
     gz_sim = ExecuteProcess(
         cmd=['gz', 'sim', 'empty.sdf', '-r'],
         output='screen'
     )
-    
+
     # Spawn entity
     spawn_entity = Node(
         package='ros_gz_sim',
@@ -121,7 +117,7 @@ def generate_launch_description():
         parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
         output='screen'
     )
-    
+
     # Static TF
     static_tf = Node(
         package='tf2_ros',
@@ -134,7 +130,7 @@ def generate_launch_description():
         ],
         parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
-    
+
     # ROS-Gazebo bridge
     bridge = Node(
         package='ros_gz_bridge',
@@ -158,13 +154,13 @@ def generate_launch_description():
             )
         ]
     )
-    
+
     return LaunchDescription([
         gz_resource_path,
         gz_plugin_path,
     ] + args + [
         robot_state_publisher,
-        joint_state_publisher,
+        # joint_state_publisher,
         gz_sim,
         spawn_entity,
         static_tf,
