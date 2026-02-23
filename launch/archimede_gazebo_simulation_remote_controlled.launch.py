@@ -16,12 +16,14 @@ def generate_launch_description():
         DeclareLaunchArgument('use_keyboard', default_value='true'),
         DeclareLaunchArgument('include_terrain_slip_plugin', default_value='false'),
         DeclareLaunchArgument('neural_network_model', default_value='none'),
-        DeclareLaunchArgument('include_wheels_terramechanic_model', default_value='false'),
-        DeclareLaunchArgument('world_name', default_value='only_walls.sdf'),
+        DeclareLaunchArgument('world_name', default_value='empty_world.world'),
+        DeclareLaunchArgument('gz_sim_args', default_value=''),
         DeclareLaunchArgument('rocker_differential', default_value='false'),
         DeclareLaunchArgument('p310_env', default_value=os.environ.get('PYTHON_VENV', os.path.join(os.path.expanduser('~'), 'p310Venv/bin/python3.10'))),
         DeclareLaunchArgument('add_velodyneHDL32E', default_value='false'),
         DeclareLaunchArgument('lidar_organize_cloud', default_value='false'),
+	    DeclareLaunchArgument('include_wheels_terramechanic_model', default_value='false'),
+	    DeclareLaunchArgument('terramechanics_config_path', default_value='/home/s250877/archimede_ros2_ws/src/archimede_rover/gz_terramechanics/config'),
     ]
 
     # Include main gazebo simulation
@@ -32,11 +34,13 @@ def generate_launch_description():
         launch_arguments={
             'include_terrain_slip_plugin': LaunchConfiguration('include_terrain_slip_plugin'),
             'neural_network_model': LaunchConfiguration('neural_network_model'),
-            'include_wheels_terramechanic_model': LaunchConfiguration('include_wheels_terramechanic_model'),
             'rocker_differential': LaunchConfiguration('rocker_differential'),
             'world_name': LaunchConfiguration('world_name'),
+            'gz_sim_args': LaunchConfiguration('gz_sim_args'),
             'add_velodyneHDL32E': LaunchConfiguration('add_velodyneHDL32E'),
             'lidar_organize_cloud': LaunchConfiguration('lidar_organize_cloud'),
+            'include_wheels_terramechanic_model': LaunchConfiguration('include_wheels_terramechanic_model'),
+            'terramechanics_config_path': LaunchConfiguration('terramechanics_config_path'),
         }.items()
     )
 

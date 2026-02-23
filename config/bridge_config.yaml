@@ -73,3 +73,52 @@
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "gz.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
+
+# Terramechanics plugin topics
+- ros_topic_name: "Archimede/bl_wheel_link_terramech_forces"
+  gz_topic_name: "terra/Archimede_bl_wheel_link/forces"
+  ros_type_name: "ros_gz_interfaces/msg/Float32Array"
+  gz_type_name: "gz.msgs.Float_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "Archimede/bl_wheel_link_terramech_state"
+  gz_topic_name: "terra/Archimede_bl_wheel_link/state"
+  ros_type_name: "ros_gz_interfaces/msg/Float32Array"
+  gz_type_name: "gz.msgs.Float_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "Archimede/br_wheel_link_terramech_forces"
+  gz_topic_name: "terra/Archimede_br_wheel_link/forces"
+  ros_type_name: "ros_gz_interfaces/msg/Float32Array"
+  gz_type_name: "gz.msgs.Float_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "Archimede/br_wheel_link_terramech_state"
+  gz_topic_name: "terra/Archimede_br_wheel_link/state"
+  ros_type_name: "ros_gz_interfaces/msg/Float32Array"
+  gz_type_name: "gz.msgs.Float_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "Archimede/fl_wheel_link_terramech_forces"
+  gz_topic_name: "terra/Archimede_fl_wheel_link/forces"
+  ros_type_name: "ros_gz_interfaces/msg/Float32Array"
+  gz_type_name: "gz.msgs.Float_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "Archimede/fl_wheel_link_terramech_state"
+  gz_topic_name: "terra/Archimede_fl_wheel_link/state"
+  ros_type_name: "ros_gz_interfaces/msg/Float32Array"
+  gz_type_name: "gz.msgs.Float_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "Archimede/fr_wheel_link_terramech_forces"
+  gz_topic_name: "terra/Archimede_fr_wheel_link/forces"
+  ros_type_name: "ros_gz_interfaces/msg/Float32Array"
+  gz_type_name: "gz.msgs.Float_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "Archimede/fr_wheel_link_terramech_state"
+  gz_topic_name: "terra/Archimede_fr_wheel_link/state"
+  ros_type_name: "ros_gz_interfaces/msg/Float32Array"
+  gz_type_name: "gz.msgs.Float_V"
+  direction: GZ_TO_ROS

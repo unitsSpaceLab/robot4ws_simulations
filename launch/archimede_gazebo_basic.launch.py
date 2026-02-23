@@ -38,6 +38,8 @@ def generate_launch_description():
         DeclareLaunchArgument('model', default_value=PathJoinSubstitution([pkg_share, 'urdf', 'rover.urdf.xacro'])),
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         DeclareLaunchArgument('use_rviz', default_value='false'),
+        DeclareLaunchArgument('world_name', default_value='empty_world.world'),
+        DeclareLaunchArgument('gz_sim_args', default_value=''),
         DeclareLaunchArgument('include_plugins', default_value='true'),
         DeclareLaunchArgument('pos_x', default_value='0.0'),
         DeclareLaunchArgument('pos_y', default_value='0.0'),
@@ -53,6 +55,8 @@ def generate_launch_description():
         DeclareLaunchArgument('include_terrain_slip_plugin', default_value='false'),
         DeclareLaunchArgument('add_velodyneHDL32E', default_value='false'),
         DeclareLaunchArgument('lidar_organize_cloud', default_value='false'),
+	    DeclareLaunchArgument('include_wheels_terramechanic_model', default_value='false'),
+	    DeclareLaunchArgument('terramechanics_config_path', default_value='/home/s250877/archimede_ros2_ws/src/archimede_rover/gz_terramechanics/config'),
     ]
 
     # Robot description
@@ -67,7 +71,9 @@ def generate_launch_description():
             ' rocker_differential:=', LaunchConfiguration('rocker_differential'),
             ' include_terrain_slip_plugin:=', LaunchConfiguration('include_terrain_slip_plugin'),
             ' add_velodyneHDL32E:=', LaunchConfiguration('add_velodyneHDL32E'),
-            ' lidar_organize_cloud:=', LaunchConfiguration('lidar_organize_cloud')
+            ' lidar_organize_cloud:=', LaunchConfiguration('lidar_organize_cloud'),
+            ' include_wheels_terramechanic_model:=', LaunchConfiguration('include_wheels_terramechanic_model'),
+            ' terramechanics_config_path:=', LaunchConfiguration('terramechanics_config_path')
         ]),
         value_type=str
     )
@@ -96,7 +102,7 @@ def generate_launch_description():
 
     # Gazebo - empty world
     gz_sim = ExecuteProcess(
-        cmd=['gz', 'sim', 'empty.sdf', '-r'],
+        cmd=['gz', 'sim', LaunchConfiguration('gz_sim_args'), LaunchConfiguration('world_name')],
         output='screen'
     )
 
