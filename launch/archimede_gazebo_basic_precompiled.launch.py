@@ -1,0 +1,199 @@
+#!/usr/bin/env python3
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, GroupAction, ExecuteProcess, SetEnvironmentVariable, OpaqueFunction, RegisterEventHandler
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command, EnvironmentVariable
+from launch.event_handlers import OnShutdown
+from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
+from launch_ros.descriptions import ParameterValue
+from ament_index_python.packages import get_package_share_directory
+from robot4ws_simulations.utils import generate_temp_world_with_xacro, find_world_file
+import os
+import subprocess
+
+
+def setup_world(context, *args, **kwargs):
+    # resolve context values at run time
+    base_world = find_world_file(LaunchConfiguration('world_name').perform(context))
+
+    gz_sim_args = LaunchConfiguration('gz_sim_args').perform(context)
+
+    urdf_xml = subprocess.check_output(
+        [
+            "xacro", LaunchConfiguration('model').perform(context),
+            f"include_plugins:={LaunchConfiguration('include_plugins').perform(context)}",
+            f"show_cameras:={LaunchConfiguration('show_cameras').perform(context)}",
+            f"show_laser_scan:={LaunchConfiguration('show_laser_scan').perform(context)}",
+            f"visualize_imu:={LaunchConfiguration('show_imu').perform(context)}",
+            f"visualize_realsense:={LaunchConfiguration('show_realsense').perform(context)}",
+            f"rocker_differential:={LaunchConfiguration('rocker_differential').perform(context)}",
+            f"include_terrain_slip_plugin:={LaunchConfiguration('include_terrain_slip_plugin').perform(context)}",
+            f"add_velodyneHDL32E:={LaunchConfiguration('add_velodyneHDL32E').perform(context)}",
+            f"lidar_organize_cloud:={LaunchConfiguration('lidar_organize_cloud').perform(context)}",
+            f"include_wheels_terramechanic_model:={LaunchConfiguration('include_wheels_terramechanic_model').perform(context)}",
+            f"terramechanics_config_path:={LaunchConfiguration('terramechanics_config_path').perform(context)}"
+        ],
+        text=True
+    )
+
+    init_pose = (f"{LaunchConfiguration('pos_x').perform(context)}"
+                f" {LaunchConfiguration('pos_y').perform(context)}"
+                f" {LaunchConfiguration('pos_z').perform(context)}"
+                f" {LaunchConfiguration('pos_roll').perform(context)}"
+                f" {LaunchConfiguration('pos_pitch').perform(context)}"
+                f" {LaunchConfiguration('pos_yaw').perform(context)}")
+
+    # Generate temporary world file (including our robot)
+    world_path, cleanup = generate_temp_world_with_xacro(
+        base_world_path = base_world,
+        urdf_xml = urdf_xml,
+        model_name = 'Archimede',
+        pose = init_pose
+    )
+
+    # Launch gz sim
+    gz_sim = ExecuteProcess(
+        cmd=['gz', 'sim', gz_sim_args, world_path],
+        output='screen'
+    )
+
+    # # Cleanup tmp world on shutdown
+    # cleanup_handler = RegisterEventHandler(
+    #     OnShutdown(on_shutdown=[cleanup])
+    # )
+
+    # return [gz_sim, cleanup_handler]
+    return [gz_sim]
+
+
+def generate_launch_description():
+    pkg_share = FindPackageShare('robot4ws_description')
+    pkg_sim = FindPackageShare('robot4ws_simulations')
+    pkg_plugins = FindPackageShare('robot4ws_gazebo_plugins')
+
+    # Get package directory for bridge config
+    pkg_share_dir = get_package_share_directory('robot4ws_description')
+    bridge_config_file = os.path.join(get_package_share_directory('robot4ws_simulations'), 'config', 'bridge_config.yaml')
+
+    # Set Gazebo environment variables
+    gz_resource_path = SetEnvironmentVariable(
+        'GZ_SIM_RESOURCE_PATH',
+        [EnvironmentVariable('GZ_SIM_RESOURCE_PATH', default_value=''),
+         os.pathsep,
+         PathJoinSubstitution([pkg_share, '..'])]
+    )
+
+    gz_plugin_path = SetEnvironmentVariable(
+        'GZ_SIM_SYSTEM_PLUGIN_PATH',
+        [EnvironmentVariable('GZ_SIM_SYSTEM_PLUGIN_PATH', default_value=''),
+         os.pathsep,
+         PathJoinSubstitution([pkg_plugins, '..', '..', 'lib'])]
+    )
+
+    # Declare arguments
+    args = [
+        DeclareLaunchArgument('model', default_value=PathJoinSubstitution([pkg_share, 'urdf', 'rover.urdf.xacro'])),
+        DeclareLaunchArgument('use_sim_time', default_value='true'),
+        DeclareLaunchArgument('use_rviz', default_value='false'),
+        DeclareLaunchArgument('world_name', default_value='empty_world.world'),
+        DeclareLaunchArgument('gz_sim_args', default_value=''),
+        DeclareLaunchArgument('include_plugins', default_value='true'),
+        DeclareLaunchArgument('pos_x', default_value='0.0'),
+        DeclareLaunchArgument('pos_y', default_value='0.0'),
+        DeclareLaunchArgument('pos_z', default_value='0.17'),
+        DeclareLaunchArgument('pos_roll', default_value='0.0'),
+        DeclareLaunchArgument('pos_pitch', default_value='0.0'),
+        DeclareLaunchArgument('pos_yaw', default_value='0.0'),
+        DeclareLaunchArgument('show_imu', default_value='false'),
+        DeclareLaunchArgument('show_cameras', default_value='false'),
+        DeclareLaunchArgument('show_laser_scan', default_value='false'),
+        DeclareLaunchArgument('show_realsense', default_value='false'),
+        DeclareLaunchArgument('rocker_differential', default_value='false'),
+        DeclareLaunchArgument('include_terrain_slip_plugin', default_value='false'),
+        DeclareLaunchArgument('add_velodyneHDL32E', default_value='false'),
+        DeclareLaunchArgument('lidar_organize_cloud', default_value='false'),
+	    DeclareLaunchArgument('include_wheels_terramechanic_model', default_value='false'),
+	    DeclareLaunchArgument('terramechanics_config_path', default_value='/home/s250877/archimede_ros2_ws/src/archimede_rover/gz_terramechanics/config'),
+    ]
+
+    # Robot description
+    robot_description_content = ParameterValue(
+        Command([
+            'xacro ', LaunchConfiguration('model'),
+            ' include_plugins:=', LaunchConfiguration('include_plugins'),
+            ' show_cameras:=', LaunchConfiguration('show_cameras'),
+            ' show_laser_scan:=', LaunchConfiguration('show_laser_scan'),
+            ' visualize_imu:=', LaunchConfiguration('show_imu'),
+            ' visualize_realsense:=', LaunchConfiguration('show_realsense'),
+            ' rocker_differential:=', LaunchConfiguration('rocker_differential'),
+            ' include_terrain_slip_plugin:=', LaunchConfiguration('include_terrain_slip_plugin'),
+            ' add_velodyneHDL32E:=', LaunchConfiguration('add_velodyneHDL32E'),
+            ' lidar_organize_cloud:=', LaunchConfiguration('lidar_organize_cloud'),
+            ' include_wheels_terramechanic_model:=', LaunchConfiguration('include_wheels_terramechanic_model'),
+            ' terramechanics_config_path:=', LaunchConfiguration('terramechanics_config_path')
+        ]),
+        value_type=str
+    )
+
+    # Robot state publisher
+    robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        parameters=[{
+            'robot_description': robot_description_content,
+            'use_sim_time': LaunchConfiguration('use_sim_time')
+        }],
+        output='screen'
+    )
+
+    # Static TF
+    static_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=[
+            '--x', '0', '--y', '0', '--z', '0.158679999951',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'Archimede_footprint',
+            '--child-frame-id', 'Archimede_base_link'
+        ],
+        parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]
+    )
+
+    # ROS-Gazebo bridge
+    bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        parameters=[
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+            {'config_file': bridge_config_file}
+        ],
+        output='screen'
+    )
+
+    # RViz
+    rviz = GroupAction(
+        condition=IfCondition(LaunchConfiguration('use_rviz')),
+        actions=[
+            Node(
+                package='rviz2',
+                executable='rviz2',
+                parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
+                output='screen'
+            )
+        ]
+    )
+
+    launch_description = LaunchDescription([
+        gz_resource_path,
+        gz_plugin_path,
+    ] + args + [
+        robot_state_publisher,
+        static_tf,
+        bridge,
+        rviz
+    ])
+
+    launch_description.add_action(OpaqueFunction(function=setup_world))
+
+    return launch_description

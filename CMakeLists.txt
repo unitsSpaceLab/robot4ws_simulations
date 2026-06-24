@@ -17,6 +17,14 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(ros_gz_sim REQUIRED)
 find_package(ros_gz_bridge REQUIRED)
 
+# Install Python modules
+ament_python_install_package(${PROJECT_NAME})
+
+# Install Python executables
+install(PROGRAMS
+  robot4ws_simulations/utils.py
+  DESTINATION lib/${PROJECT_NAME})
+
 # Install launch files
 install(DIRECTORY
   launch
