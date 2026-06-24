@@ -8,15 +8,21 @@
   gz_type_name: "gz.msgs.Pose_V"
   direction: GZ_TO_ROS
 
-- topic_name: "Archimede/odom"
+- topic_name: "Archimede/pose_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "gz.msgs.Odometry"
   direction: GZ_TO_ROS
 
-- topic_name: "Archimede/odom_with_covariance"
-  ros_type_name: "nav_msgs/msg/Odometry"
-  gz_type_name: "gz.msgs.OdometryWithCovariance"
-  direction: GZ_TO_ROS
+# Odometry placeholder, currently not active in plugins.xacro
+# - topic_name: "Archimede/odom"
+#   ros_type_name: "nav_msgs/msg/Odometry"
+#   gz_type_name: "gz.msgs.Odometry"
+#   direction: GZ_TO_ROS
+# 
+# - topic_name: "Archimede/odom_with_covariance"
+#   ros_type_name: "nav_msgs/msg/Odometry"
+#   gz_type_name: "gz.msgs.OdometryWithCovariance"
+#   direction: GZ_TO_ROS
 
 - topic_name: "Archimede/joint_states"
   ros_type_name: "sensor_msgs/msg/JointState"
@@ -44,26 +50,22 @@
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "Archimede/rs_camera/camera_info"
-  gz_topic_name: "world/empty/model/archimede_rover/link/Archimede_base_link/sensor/rs_camera/camera_info"
+- topic_name: "Archimede/rs_camera/camera_info"
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   gz_type_name: "gz.msgs.CameraInfo"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "Archimede/rs_camera/depth_image"
-  gz_topic_name: "world/empty/model/archimede_rover/link/Archimede_base_link/sensor/rs_camera/depth_image"
+- topic_name: "Archimede/rs_camera/depth_image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "Archimede/rs_camera/image"
-  gz_topic_name: "world/empty/model/archimede_rover/link/Archimede_base_link/sensor/rs_camera/image"
+- topic_name: "Archimede/rs_camera/image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "Archimede/rs_camera/points"
-  gz_topic_name: "world/empty/model/archimede_rover/link/Archimede_base_link/sensor/rs_camera/points"
+- topic_name: "Archimede/rs_camera/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "gz.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
