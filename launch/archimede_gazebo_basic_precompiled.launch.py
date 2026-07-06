@@ -168,6 +168,10 @@ def generate_launch_description():
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
             {'config_file': bridge_config_file}
         ],
+        arguments=[
+            # pause/unpause sim with $ ros2 service call /world/<world_name>/control ros_gz_interfaces/srv/ControlWorld "{world_control: {pause: false}}"
+            '/world/default/control@ros_gz_interfaces/srv/ControlWorld'
+        ],
         output='screen'
     )
 
